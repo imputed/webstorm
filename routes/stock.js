@@ -17,7 +17,7 @@ router.get('/', async function (req, res, next) {
     let symbols = await service.GetAll();
 
     for (let i = 0; i < symbols.length; i++) {
-        let item = new stock(symbols[i].stock.name, symbols[i].stock.symbol, symbols[i].stock.quantity)
+        let item = new stock(symbols[i].stock.name, symbols[i].stock.symbol, symbols[i].stock.quantity,symbols[i].stock.institute )
         await yahooFinance.quote({
             symbol: item.symbol,
             modules: ['price']
@@ -33,6 +33,7 @@ router.get('/', async function (req, res, next) {
                 "symbol": item.symbol,
                 "price": price,
                 "quantity": item.quantity,
+                "institute":item.institute
 
             })
 
@@ -46,8 +47,8 @@ router.post('/', function (req, res, next) {
     let ms = new mongoService();
     let stocks = [];
     for (let i = 0; i < req.body.length; i++) {
-        if (typeof (req.body[i].name) != undefined && typeof (req.body[i].symbol) != undefined && typeof (req.body[i].quantity != undefined)) {
-            stocks.push({"stock": new stock(req.body[i].name, req.body[i].symbol, req.body[i].quantity)});
+        if (typeof (req.body[i].name) != undefined && typeof (req.body[i].symbol) != undefined && typeof (req.body[i].quantity != undefined)&&typeof (req.body[i].institute != undefined)) {
+            stocks.push({"stock": new stock(req.body[i].name, req.body[i].symbol, req.body[i].quantity, req.body[i].institute )});
         }
         ms.insertStock(stocks)
     }
